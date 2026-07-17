@@ -11,13 +11,24 @@ class Lexer:
         self.tokens: list[Token] = []
 
     def eat(self) -> str:
-        return ""
+        res = self.source[self.current]
+        self.current += 1
+        return res
 
     def add_token(self, token_type: TokenType, literal: object = None) -> None:
         lexeme = self.source[self.start:self.current]
         self.tokens.append(Token(lexeme, token_type, self.line, literal))
 
-    def scan_token(self):
+    def match(self, expected: str) -> bool:
+        if self.current <= len(self.source): return False
+
+        if self.source[self.current] == expected: 
+            self.current += 1
+            return True
+
+        return False
+
+    def scan_token(self) -> None:
         char = self.eat()
 
         match char:
@@ -31,11 +42,16 @@ class Lexer:
             case '+': self.add_token(TokenType.PLUS)
             case ';': self.add_token(TokenType.SEMICOLON)
             case '*': self.add_token(TokenType.STAR)
+
+            case '!': self.add_token(TokenType.BANG_EQUAL if self.match('=') else TokenType.BANG)
+            case '=': self.add_token(TokenType.EQUAL_EQUAL if self.match('=') else TokenType.EQUAL)
+            case '<': self.add_token(TokenType.LESS_EQUAL if self.match('=') else TokenType.LESS)
+            case '>': self.add_token(TokenType.GREATER_EQUAL if self.match('=') else TokenType.GREATER)
+
             case _: ErrorReporter.error(self.line, "Unexpected character.")
 
-
     def scan_tokens(self) -> list[str]:
-        while not (self.current >= len(self.source)):
+        while self.current <= len(self.source):
             self.start = self.current
             self.scan_token()
             pass
