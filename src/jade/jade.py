@@ -1,9 +1,7 @@
-from lexer import Lexer
 import sys
+from lexer import Lexer
 
 class Jade:
-    had_error = False
-
     @staticmethod
     def run(source: str) -> None:
         lexer = Lexer(source)
@@ -42,11 +40,5 @@ class Jade:
         else:
             Jade.run_prompt()
 
-    @classmethod
-    def report(cls, line: int, where: str, message: str) -> None:
-        print(f"[line {line}] Error: {where}: {message}")
-        cls.had_error = True
-
-    @staticmethod
-    def error(line: int, message: str) -> None:
-        Jade.report(line, "", message)
+if __name__ == "__main__":
+    Jade.main()
