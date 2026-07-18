@@ -92,7 +92,7 @@ class Lexer:
                     while self.peek() != '\n' and not self.is_at_end(): self.eat()
                 else: self.add_token(TokenType.SLASH)
 
-            case '"': scan_string()
+            case '"': self.scan_string()
 
             case ' ' | '\t' | '\r': pass
             case '\n': self.line += 1
