@@ -66,6 +66,22 @@ class Lexer:
         if (text in KEYWORD_TYPES): self.add_token(KEYWORD_TYPES[text], text)
         else: self.add_token(TokenType.IDENTIFIER, text)
 
+    def scan_block_comment(self) -> None:
+        while not (self.peek() == '*' and self.peek_next() == '/') and not self.is_at_end(): 
+            if self.peek() == '\n': self.line += 1
+
+            if self.peek() == '/' and self.peek_next() == '*': 
+                self.eat() # eat the '/' like how we started before
+                self.scan_block_comment()
+
+            self.eat()
+
+        if self.is_at_end():
+            ErrorReporter.error(self.line, "Unterminated block comment.")
+
+        # eat the remaining `*/`
+        self.eat()
+        self.eat()
 
     def scan_token(self) -> None:
         char = self.eat()
@@ -90,14 +106,7 @@ class Lexer:
             case '/':
                 if self.match('/'):
                     while self.peek() != '\n' and not self.is_at_end(): self.eat()
-
-                elif self.match('*'):
-                    while self.peek() != '*' and self.peek_next() != '/' and not self.is_at_end(): self.eat()
-
-                    # eat the remaining `*/`
-                    self.eat()
-                    self.eat()
-
+                elif self.match('*'): self.scan_block_comment()
                 else: self.add_token(TokenType.SLASH)
 
             case '"': self.scan_string()
