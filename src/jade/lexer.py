@@ -15,10 +15,6 @@ class Lexer:
         self.current += 1
         return res
 
-    def add_token(self, token_type: TokenType, literal: object = None) -> None:
-        lexeme = self.source[self.start:self.current]
-        self.tokens.append(Token(lexeme, token_type, self.line, literal))
-
     def match(self, expected: str) -> bool:
         if self.is_at_end(): return False
 
@@ -32,8 +28,37 @@ class Lexer:
         if self.is_at_end(): return '\0'
         return self.source[self.current]
 
+    def peek_next(self) -> str:
+        if self.current + 1 >= len(self.source): return '\0'
+        return self.source[self.current + 1]
+
+    def add_token(self, token_type: TokenType, literal: object = None) -> None:
+        lexeme = self.source[self.start:self.current]
+        self.tokens.append(Token(lexeme, token_type, self.line, literal))
+
     def is_at_end(self) -> bool:
         return self.current >= len(self.source)
+
+    def scan_string(self) -> None:
+        while self.peek() != '"' and not self.is_at_end():
+            if self.peek() == '\n': self.line += 1
+            self.eat()
+
+        if self.is_at_end():
+            return ErrorReporter.error(self.line, "Unterminated string.")
+
+        self.eat() # eats the closing `"`
+        self.add_token(TokenType.STRING, self.source[self.start + 1:self.current - 1])
+
+    def scan_number(self) -> None:
+        while self.peek().isdigit(): self.eat()
+
+        if self.peek() == '.' and self.peek_next().isdigit():
+            self.eat() # eats the `.`
+            while self.peek().isdigit(): self.eat()
+
+        self.add_token(TokenType.NUMBER, float(self.source[self.start:self.current]))
+
 
     def scan_token(self) -> None:
         char = self.eat()
@@ -60,10 +85,14 @@ class Lexer:
                     while self.peek() != '\n' and not self.is_at_end(): self.eat()
                 else: self.add_token(TokenType.SLASH)
 
+            case '"': scan_string()
+
             case ' ' | '\t' | '\r': pass
             case '\n': self.line += 1
 
-            case _: ErrorReporter.error(self.line, f"Unexpected character `{char}`.")
+            case _:
+                if char.isdigit(): self.scan_number()
+                else: ErrorReporter.error(self.line, f"Unexpected character `{char}`.")
 
     def scan_tokens(self) -> list[Token]:
         while not self.is_at_end():
