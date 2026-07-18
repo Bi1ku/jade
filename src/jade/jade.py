@@ -1,5 +1,6 @@
 import sys
 from lexer import Lexer
+from error_reporter import ErrorReporter
 
 class Jade:
     @staticmethod
@@ -17,6 +18,7 @@ class Jade:
             content = file.read()
 
         Jade.run(content)
+        if ErrorReporter.had_error: sys.exit(65)
 
     @staticmethod
     def run_prompt():
@@ -25,7 +27,7 @@ class Jade:
             print(line)
             # if line == None: break # check if cntrl-d if `line` is really None
             Jade.run(line)
-
+            ErrorReporter.had_error = False
 
     @staticmethod
     def main():
@@ -35,7 +37,7 @@ class Jade:
             sys.exit(64)
 
         elif args_length == 1:
-            Jade.run_file(sys.argv[2])
+            Jade.run_file(sys.argv[1])
 
         else:
             Jade.run_prompt()
