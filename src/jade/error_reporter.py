@@ -1,5 +1,3 @@
-import sys
-
 class ErrorReporter:
     had_error = False
 

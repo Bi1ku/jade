@@ -90,6 +90,14 @@ class Lexer:
             case '/':
                 if self.match('/'):
                     while self.peek() != '\n' and not self.is_at_end(): self.eat()
+
+                elif self.match('*'):
+                    while self.peek() != '*' and self.peek_next() != '/' and not self.is_at_end(): self.eat()
+
+                    # eat the remaining `*/`
+                    self.eat()
+                    self.eat()
+
                 else: self.add_token(TokenType.SLASH)
 
             case '"': self.scan_string()
