@@ -1,5 +1,5 @@
 from jade_token import Token
-from data_types import TokenType
+from data_types import TokenType, KEYWORD_TYPES
 from error_reporter import ErrorReporter
 
 class Lexer:
@@ -59,6 +59,13 @@ class Lexer:
 
         self.add_token(TokenType.NUMBER, float(self.source[self.start:self.current]))
 
+    def scan_identifier_or_keyword(self) -> None:
+        while self.peek().isalnum() or self.peek() == '_': self.eat()
+            
+        text = self.source[self.start:self.current]
+        if (text in KEYWORD_TYPES): self.add_token(KEYWORD_TYPES[text], text)
+        else: self.add_token(TokenType.IDENTIFIER, text)
+
 
     def scan_token(self) -> None:
         char = self.eat()
@@ -92,6 +99,7 @@ class Lexer:
 
             case _:
                 if char.isdigit(): self.scan_number()
+                elif char.isalpha(): self.scan_identifier_or_keyword()
                 else: ErrorReporter.error(self.line, f"Unexpected character `{char}`.")
 
     def scan_tokens(self) -> list[Token]:

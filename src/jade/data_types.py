@@ -18,3 +18,22 @@ class TokenType(Enum):
     # keywords
     AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR = 23, 24, 25, 26, 27, 28, 29, 30, 31
     PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE, EOF = 32, 33, 34, 35, 36, 37, 38, 39
+
+KEYWORD_TYPES = {
+    "and": TokenType.AND,
+    "class": TokenType.CLASS,
+    "else": TokenType.ELSE,
+    "false": TokenType.FALSE,
+    "for": TokenType.FOR,
+    "fun": TokenType.FUN,
+    "if": TokenType.IF,
+    "nil": TokenType.NIL,
+    "or": TokenType.OR,
+    "print": TokenType.PRINT,
+    "return": TokenType.RETURN,
+    "super": TokenType.SUPER,
+    "this": TokenType.THIS,
+    "true": TokenType.TRUE,
+    "var": TokenType.VAR,
+    "while": TokenType.WHILE
+}
