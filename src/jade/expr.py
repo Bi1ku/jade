@@ -4,14 +4,14 @@ from lexer import Token
 
 class ExprVisitor(ABC):
     @abstractmethod
-    def visit_binary_expr(self, expr: BinaryExpr): pass
-    def visit_grouping_expr(self, expr: GroupingExpr): pass
-    def visit_literal_expr(self, expr: LiteralExpr): pass
-    def visit_unary_expr(self, expr: UnaryExpr): pass
+    def visit_binary_expr(self, expr: BinaryExpr) -> str: return "\0"
+    def visit_grouping_expr(self, expr: GroupingExpr) -> str: return "\0"
+    def visit_literal_expr(self, expr: LiteralExpr) -> str: return "\0"
+    def visit_unary_expr(self, expr: UnaryExpr) -> str: return "\0"
 
 class Expr(ABC):
     @abstractmethod
-    def accept(self, visitor: ExprVisitor): pass
+    def accept(self, visitor: ExprVisitor) -> None: pass
 
 class BinaryExpr(Expr): 
     def __init__(self, left: Expr, operator: Token, right: Expr) -> None:
