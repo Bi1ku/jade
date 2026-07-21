@@ -1,21 +1,48 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+from typing import override
 from jade_token import Token
 
+class ExprVisitor(ABC):
+    @abstractmethod
+    def visit_binary_expr(self, expr: BinaryExpr): pass
+    def visit_grouping_expr(self, expr: GroupingExpr): pass
+    def visit_literal_expr(self, expr: LiteralExpr): pass
+    def visit_unary_expr(self, expr: UnaryExpr): pass
+
 class Expr(ABC):
-    pass
+    @abstractmethod
+    def accept(self, visitor: ExprVisitor): pass
 
 class BinaryExpr(Expr): 
     def __init__(self, left: Expr, operator: Token, right: Expr) -> None:
         self.left, self.operator, self.right = left, operator, right
 
+    @override
+    def accept(self, visitor: ExprVisitor):
+        visitor.visit_binary_expr(self)
+
 class GroupingExpr(Expr):
     def __init__(self, expr: Expr) -> None:
         self.expr = expr
+
+    @override
+    def accept(self, visitor: ExprVisitor):
+        visitor.visit_grouping_expr(self)
+   
 
 class LiteralExpr(Expr):
     def __init__(self, value: object) -> None:
         self.value = value
 
+    @override
+    def accept(self, visitor: ExprVisitor):
+        visitor.visit_literal_expr(self)
+
 class UnaryExpr(Expr):
     def __init__(self, operator: Token, right: Expr) -> None:
         self.operator, self.right = operator, right
+
+    @override
+    def accept(self, visitor: ExprVisitor):
+        visitor.visit_unary_expr(self)
+
