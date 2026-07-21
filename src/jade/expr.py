@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import override
-from jade_token import Token
+from lexer import Token
 
 class ExprVisitor(ABC):
     @abstractmethod
@@ -29,7 +29,6 @@ class GroupingExpr(Expr):
     def accept(self, visitor: ExprVisitor):
         visitor.visit_grouping_expr(self)
    
-
 class LiteralExpr(Expr):
     def __init__(self, value: object) -> None:
         self.value = value

@@ -1,3 +1,9 @@
+"""
+The ErrorReporter class must be in its own file to prevent circular
+import errors. This is because this class is designed to be used 
+globally throughout the project.
+"""
+
 class ErrorReporter:
     had_error = False
 
@@ -9,3 +15,4 @@ class ErrorReporter:
     @staticmethod
     def error(line: int, message: str) -> None:
         ErrorReporter.report(line, "", message)
+
