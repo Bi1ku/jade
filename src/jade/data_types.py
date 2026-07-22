@@ -1,5 +1,12 @@
 from enum import Enum
 
+class Token:
+    def __init__(self, lexeme: str, type: TokenType, line: int, literal: object) -> None:
+        self.lexeme, self.type, self.line, self.literal = lexeme, type, line, literal
+
+    def __str__(self) -> str:
+        return f"{self.type} {self.lexeme} {self.literal}"
+
 class TokenType(Enum):
     # single character tokens
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, COMMA = 1, 2, 3, 4, 5

@@ -1,12 +1,5 @@
-from data_types import TokenType, KEYWORD_TYPES
-from error_reporter import ErrorReporter
-
-class Token:
-    def __init__(self, lexeme: str, type: TokenType, line: int, literal: object) -> None:
-        self.lexeme, self.type, self.line, self.literal = lexeme, type, line, literal
-
-    def __str__(self) -> str:
-        return f"{self.type} {self.lexeme} {self.literal}"
+from data_types import Token, TokenType, KEYWORD_TYPES
+from error import ErrorReporter
 
 class Lexer:
     def __init__(self, source: str) -> None:
@@ -131,4 +124,5 @@ class Lexer:
             self.scan_token()
             pass
 
+        self.tokens.append(Token("EOF", TokenType.EOF, self.line, None))
         return self.tokens

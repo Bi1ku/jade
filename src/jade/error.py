@@ -1,7 +1,7 @@
 """
-The ErrorReporter class must be in its own file to prevent circular
-import errors. This is because this class is designed to be used 
-globally throughout the project.
+The ErrorReporter class must be in its own file to prevent circular import errors. This is primarily because
+this class is designed to be used globally throughout the project so defining it in another module that depends
+on another module wouldn't work.
 """
 
 class ErrorReporter:

@@ -1,6 +1,6 @@
 import sys
 from lexer import Lexer
-from error_reporter import ErrorReporter
+from error import ErrorReporter
 from expr import ExprVisitor, Expr, BinaryExpr, UnaryExpr, LiteralExpr, GroupingExpr
 from typing import override
 
@@ -25,11 +25,13 @@ class Jade:
     @staticmethod
     def run_prompt():
         while 1:
-            line = input("> ")
-            print(line)
-            # if line == None: break # check if cntrl-d if `line` is really None
-            Jade.run(line)
-            ErrorReporter.had_error = False
+            try:
+                line = input("> ")
+                if line == "exit()": break
+                Jade.run(line)
+                ErrorReporter.had_error = False
+
+            except EOFError: break
 
     @staticmethod
     def main():
@@ -44,6 +46,7 @@ class Jade:
         else:
             Jade.run_prompt()
 
+# ASTPrinter is simply a helper class for debugging.
 class ASTPrinter(ExprVisitor):
     def print(self, expr: Expr) -> None:
         return expr.accept(self)
@@ -69,6 +72,10 @@ class ASTPrinter(ExprVisitor):
     def visit_literal_expr(self, expr: LiteralExpr) -> str:
         if (expr.value == None): return "nil"
         return expr.value.__str__()
+
+    @override
+    def visit_unary_expr(self, expr: UnaryExpr) -> str:
+        return self.parenthesize(expr.operator.lexeme, expr.right)
 
 if __name__ == "__main__":
     Jade.main()
